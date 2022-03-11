@@ -58,11 +58,12 @@ def LevelEenCheck():
     elif antwoord == "Nee":
         gameover("Dat was geen goede keuze, je bent in de nacht om het leven gebracht door de monsters op het eiland.")
 
-def LevelTwee_1():
-    #Saved == 1
+def opslaan(getal):
     with open(filepath, 'w') as f:
-        json.dump({"Saved": 1}, f)
-    #Saved == 1
+        json.dump({"Saved": getal}, f)
+
+def LevelTwee_1():
+    opslaan(1)
     level.configure(text="Level 2 - Het Bos")
     verhaal.configure(text=verhaaltje2)
     verhaal.place(x=150)
@@ -71,7 +72,7 @@ def LevelTwee_1():
     antwoordV.configure(textvariable=slaapplekInput,values=jaNee)
     button.configure(command=LevelTweeCheck_1)
 def LevelTwee_2():
-    Saved == 2
+    opslaan(2)
     level.configure(text="Level 2 - Het Bos")
     verhaal.configure(text="Je hebt 10 planken nodig voor een slaapplek, 1 boom = 5 planken.")
     verhaal.place(x=130)
@@ -79,7 +80,7 @@ def LevelTwee_2():
     antwoordV.configure(textvariable=omhakkenInput,values=getallen)
     button.configure(command=LevelTweeCheck_2)
 def LevelTwee_3():
-    Saved == 3
+    opslaan(3)
     level.configure(text="Level 2 - Het Bos")
     verhaal.configure(text="Nadat je de hut af had ben je gaan slapen en is het nu dus de volgende ochtend.")
     verhaal.place(x=90)
@@ -88,7 +89,7 @@ def LevelTwee_3():
     antwoordV.configure(textvariable=bosvliegtuigInput,values=bosVliegtuig)
     button.configure(command=LevelTweeCheck_3)
 def LevelTwee_4():
-    Saved == 4
+    opslaan(4)
     level.configure(text="Level 2 - Het Bos")
     verhaal.configure(text="Je gaat dieper het bos in en komt een grot tegen.")
     verhaal.place(x=160)
@@ -97,7 +98,7 @@ def LevelTwee_4():
     antwoordV.configure(textvariable=grotInput,values=jaNee)
     button.configure(command=LevelTweeCheck_4)
 def LevelTwee_5():
-    Saved == 5
+    opslaan(5)
     level.configure(text="Level 2 - Het Bos")
     verhaal.configure(text="Het wordt nacht.")
     verhaal.place(x=265)
@@ -106,7 +107,7 @@ def LevelTwee_5():
     antwoordV.configure(textvariable=slaapplekInput2,values=jaNee)
     button.configure(command=LevelTweeCheck_5)
 def LevelTwee_6():
-    Saved == 6
+    opslaan(6)
     level.configure(text="Level 2 - Het Bos")
     verhaal.configure(text="Je gaat verder het bos in en vindt een verlaten huis.")
     verhaal.place(x=160)
@@ -115,7 +116,7 @@ def LevelTwee_6():
     antwoordV.configure(textvariable=huisInput,values=jaNee)
     button.configure(command=LevelTweeCheck_6)
 def LevelDrie():
-    Saved == 7
+    opslaan(7)
     level.configure(text="Level 3 - Het huis")
     verhaal.configure(text="Binnen in het huis ziet het er erg verlaten uit, maar er valt wat op in de grond.\nHet is een luik in de grond van het huis ")
     verhaal.place(x=110)
@@ -124,7 +125,7 @@ def LevelDrie():
     antwoordV.configure(textvariable=huis2Input,values=jaNee)
     button.configure(command=LevelDrieCheck)
 def LevelVier():
-    Saved == 8
+    opslaan(8)
     level.configure(text="Level 4 - de Kelder")
     verhaal.configure(text=verhaaltje3)
     verhaal.place(x=50)
@@ -133,7 +134,7 @@ def LevelVier():
     antwoordV.configure(textvariable=radioInput,values=jaNee)
     button.configure(command=LevelVierCheck_1)
 def LevelVier_2():
-    Saved == 9
+    opslaan(9)
     level.configure(text="Level 4 - de Kelder")
     verhaal.configure(text=verhaaltje4)
     verhaal.place(x=50)
@@ -142,7 +143,7 @@ def LevelVier_2():
     antwoordV.configure(textvariable=frequentieInput,values=getallen)
     button.configure(command=LevelVierCheck_2)
 def LevelVier_3():
-    Saved == 10
+    opslaan(10)
     level.configure(text="Level 4 - de Kelder")
     verhaal.configure(text="De man op de radio stelt voor om een boot te varen richting het eiland.")
     verhaal.place(x=120)
@@ -151,7 +152,7 @@ def LevelVier_3():
     antwoordV.configure(textvariable=bootInput,values=jaNee)
     button.configure(command=LevelVierCheck_3)
 def Ending():
-    Saved == 11
+    opslaan(11)
     level.configure(text="Level 4 - de Kelder")
     verhaal.configure(text=verhaaltje5)
     verhaal.place(x=70)
@@ -231,21 +232,15 @@ def LevelVierCheck_3():
         Ending()
     else:
         gameover("Je hebt het offer niet aangenomen en daarmee hebt je de verkeerde keuze gemaakt. De boot is de enige manier van het eiland af.")
-        
-def opslaanAfsluiten():
-    pass
 
 def LevelEen():
     level.configure(text="Level 1 - Vliegtuig",font=("Calibri Light", 11, font.BOLD))
-    level.place(y=0,x=255)
     verhaal.configure(text=verhaaltje1, font=("Calibri Light", 11))
     verhaal.place(y=20,x=5)
     vraag.configure(text="Neem je de bijl mee?", font=("Calibri Light", 12))
     vraag.place(y=120,x=250)
     antwoordV.configure(width=10,values=jaNee,textvariable=bijlInput, font=("Calibri Light", 12))
-    antwoordV.place(y=150,x=270)
     button.configure(width=10,text="Volgende",bd=0.5,command=LevelEenCheck)
-    button.place(y=200,x=280)
 
 def start():
     global level, verhaal, vraag, antwoordV, button, saveButton
