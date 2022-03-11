@@ -45,23 +45,20 @@ def incorrect(text):
     messagebox.showinfo("Incorrect",text)
 def gameover(text):
     messagebox.showinfo("Gameover",text)
+    os.remove(filepath)
     window.destroy()
 def volgende():
     messagebox.showinfo("Correct", "Uitstekende keuze!")
 
-def LevelEenCheck():
-    global bijlInput
-    antwoord = bijlInput.get()
-    if antwoord == "Ja":
-        volgende()
-        LevelTwee_1()
-    elif antwoord == "Nee":
-        gameover("Dat was geen goede keuze, je bent in de nacht om het leven gebracht door de monsters op het eiland.")
 
-def opslaan(getal):
-    with open(filepath, 'w') as f:
-        json.dump({"Saved": getal}, f)
-
+def LevelEen():
+    level.configure(text="Level 1 - Vliegtuig",font=("Calibri Light", 11, font.BOLD))
+    verhaal.configure(text=verhaaltje1, font=("Calibri Light", 11))
+    verhaal.place(y=20,x=5)
+    vraag.configure(text="Neem je de bijl mee?", font=("Calibri Light", 12))
+    vraag.place(y=120,x=250)
+    antwoordV.configure(width=10,values=jaNee,textvariable=bijlInput, font=("Calibri Light", 12))
+    button.configure(width=10,text="Volgende",bd=0.5,command=LevelEenCheck)
 def LevelTwee_1():
     opslaan(1)
     level.configure(text="Level 2 - Het Bos")
@@ -77,6 +74,7 @@ def LevelTwee_2():
     verhaal.configure(text="Je hebt 10 planken nodig voor een slaapplek, 1 boom = 5 planken.")
     verhaal.place(x=130)
     vraag.configure(text="Hoeveel bomen ga je omhakken voor je slaapplek?")
+    vraag.place(x=150)
     antwoordV.configure(textvariable=omhakkenInput,values=getallen)
     button.configure(command=LevelTweeCheck_2)
 def LevelTwee_3():
@@ -158,8 +156,17 @@ def Ending():
     verhaal.place(x=70)
     vraag.destroy()
     antwoordV.destroy()
-    button.configure(command=window.destroy,text="Afsluiten")
+    button.configure(command=Afsluiten,text="Afsluiten")
 
+
+def LevelEenCheck():
+    global bijlInput
+    antwoord = bijlInput.get()
+    if antwoord == "Ja":
+        volgende()
+        LevelTwee_1()
+    elif antwoord == "Nee":
+        gameover("Dat was geen goede keuze, je bent in de nacht om het leven gebracht door de monsters op het eiland.")
 def LevelTweeCheck_1():
     antwoord = slaapplekInput.get()
     if antwoord == "Ja":
@@ -233,14 +240,6 @@ def LevelVierCheck_3():
     else:
         gameover("Je hebt het offer niet aangenomen en daarmee hebt je de verkeerde keuze gemaakt. De boot is de enige manier van het eiland af.")
 
-def LevelEen():
-    level.configure(text="Level 1 - Vliegtuig",font=("Calibri Light", 11, font.BOLD))
-    verhaal.configure(text=verhaaltje1, font=("Calibri Light", 11))
-    verhaal.place(y=20,x=5)
-    vraag.configure(text="Neem je de bijl mee?", font=("Calibri Light", 12))
-    vraag.place(y=120,x=250)
-    antwoordV.configure(width=10,values=jaNee,textvariable=bijlInput, font=("Calibri Light", 12))
-    button.configure(width=10,text="Volgende",bd=0.5,command=LevelEenCheck)
 
 def start():
     global level, verhaal, vraag, antwoordV, button, saveButton
@@ -258,16 +257,51 @@ def start():
         print ("File exists and is readable")
         answer = messagebox.askyesno("Start bij Opgeslagen Vraag", "Wil je beginnen bij de laatste vraag waarbij je de vorige keer bent geeindigd?")
         if answer == True:
-            LevelTwee_1()
+            autosave()
             button.config(text="Volgende")
         elif answer == False:
             LevelEen()
     else:
         with open(filepath, 'w') as f:
-            print("The json file is created")         
+            print("The json file is created")
+        LevelEen()
 
-    # if Saved == 0:
-    #     LevelEen()
+def opslaan(getal):
+    with open(filepath, 'w') as save:
+        json.dump({"Saved": getal}, save, indent=1)
+def Afsluiten():
+    os.remove(filepath)
+    window.destroy()
+
+def autosave():
+    with open(filepath) as file:
+        data = json.load(file)
+    if data["Saved"] == 0:
+        LevelEen()
+    elif data["Saved"] == 1:
+        LevelTwee_1()
+    elif data["Saved"] == 2:
+        LevelTwee_2()
+    elif data["Saved"] == 3:
+        LevelTwee_3()
+    elif data["Saved"] == 4:
+        LevelTwee_4()
+    elif data["Saved"] == 5:
+        LevelTwee_5()
+    elif data["Saved"] == 6:
+        LevelTwee_6()
+    elif data["Saved"] == 7:
+        LevelDrie()
+    elif data["Saved"] == 8:
+        LevelVier()
+    elif data["Saved"] == 9:
+        LevelVier_2()
+    elif data["Saved"] == 10:
+        LevelVier_3()
+    elif data["Saved"] == 11:
+        Ending()
+    else:
+        print("Nee")
 
 start()
 window.mainloop()
