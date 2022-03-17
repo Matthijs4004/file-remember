@@ -1,11 +1,16 @@
 import tkinter as tk
-import random
+import random, json
 from tkinter import font, messagebox
 
 window = tk.Tk()
+filepath = r"C:\Projecten\Software Dev\Mapje 9\file-remember\data\highscores.json"
+with open(filepath, "r") as file:
+    data = json.load(file)
 btntext = tk.StringVar()
+highscores = data
 time = 20
 runTime = tk.StringVar(window, "Time Remaining: {}".format(time))
+name = tk.StringVar()
 score = 0
 scoreCount = tk.StringVar()
 scoreCount.set("Score: {}".format(score))
@@ -43,7 +48,6 @@ def newButton():
     else:
         toPress.bind(keuzes[Num1][Num2], destroyBtn)
 
-
 def destroyBtn(self, endOfGame="no"):
     global score
     toPress.destroy()
@@ -64,12 +68,57 @@ def timer():
     global time
     time -= 1
     runTime.set("Time Remaining: " + str(time))
-    timeCount = tk.Label(window,textvariable=runTime,bg="black",fg="white",font=("Calibri Light", 12, font.BOLD))
+    timeCount.configure(textvariable=runTime)
     timeCount.place(y=5)
     if time != 0:
         window.after(1000, timer)
     else:
-        endScreen()
+        scoreBoard()
+
+def scoreBoard():
+    global data, scoreboardPlace, name,scoreboardTitle,newHighscore,nameEntry,nextBtn,doneBtn
+    highScore = False
+    scoreboardPlace = 0
+    name.set("")
+    i=50
+    for x in range(5):
+        window.unbind(keuzes[0][x])
+    for x in range(3):
+        window.unbind(keuzes[1][x])
+    timeCount.destroy()
+    toPress.destroy()
+    scoreboardTitle = tk.Label(window,text="Scoreboard",bg="black",fg="white",font=("Calibri Light", 12, font.BOLD))
+    scoreboardTitle.place(y=5)
+    for person in data["Highscores"]:
+        scoreboard = tk.Label(window, text="{} : {}".format(person["Name"], person["Score"]),bg="grey",fg="white",font=("Calibri Light", 12, font.BOLD))
+        scoreboard.place(y=i,x=5)
+        i+=20
+    for person in data["Highscores"]:
+        if score > person["Score"]:
+            highScore = True
+        if not highScore:
+            scoreboardPlace += 1
+    if highScore:
+        print(scoreboardPlace)
+        newHighscore = tk.Label(text="You got a new highscore! \nWhat is your name?",bg="grey",fg="white",font=("Calibri Light", 12, font.BOLD))
+        newHighscore.place(y=70,x=140)
+        nameEntry = tk.Entry(textvariable=name)
+        nameEntry.place(y=120,x=175)
+        doneBtn = tk.Button(text="Done", command=HighscoreCheck, bg="white", fg="black",bd=0.5)
+        doneBtn.place(y=145,x=220)
+    else:
+        nextBtn = tk.Button(text="Verder",bg="white", fg="black",bd=0.5,command=endScreen)
+        nextBtn.place(y=225,x=225)
+
+def HighscoreCheck():
+    for i in range(9, scoreboardPlace, -1):
+        data["Highscores"][i]["Name"] = data["Highscores"][i-1]["Name"]
+        data["Highscores"][i]["Score"] = data["Highscores"][i-1]["Score"]
+    data["Highscores"][scoreboardPlace]["Name"] = name.get()
+    data["Highscores"][scoreboardPlace]["Score"] = score
+    with open(filepath, "w") as file:
+        file.write(json.dumps(data, indent=3))
+    window.destroy()
 
 def endScreen():
     global score
@@ -78,6 +127,11 @@ def endScreen():
     if answer:
         score = 0
         startButton()
+        scoreboardTitle.destroy()
+        newHighscore.destroy()
+        nameEntry.destroy()
+        doneBtn.destroy()
+        nextBtn.destroy()
     else:
         window.destroy()
 
